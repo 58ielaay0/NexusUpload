@@ -1,0 +1,25 @@
+name: 'Package and publish'
+description: 'Create the package of the project then publish it to Nexus'
+inputs:
+  NexusURL: 
+    description:  'The URL of the Nexus'
+    required: true
+  Repository: 
+    description:  'The Nexus repository where the package will be uploaded'
+    required: true
+  RepositoryDirectory: 
+    description:  'The Nexus directory where the package will be uploaded'
+    required: true
+  FileToUpload: 
+    description:  'The path where the file to upload is located'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - id: uploadpackage
+      run: |
+          [securestring]$secStringPassword = ConvertTo-SecureString "$env:NEXUS_PASSWORD" -AsPlainText -Force
+          [pscredential]$credObject = New-Object System.Management.Automation.PSCredential ("$env:NEXUS_USER", $secStringPassword)
+          
+          ${{ github.action_path }}/UploadNexus.ps1 -Credential $credObject -NexusURL ${{ inputs.NexusURL }} -Repository ${{ inputs.Repository }} -RepositoryDirectory ${{ inputs.RepositoryDirectory }} -PackagePath ${{ inputs.FileToUpload }}
+      shell: pwsh
