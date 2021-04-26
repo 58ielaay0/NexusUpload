@@ -1,5 +1,5 @@
-name: 'Package and publish'
-description: 'Create the package of the project then publish it to Nexus'
+name: 'Upload package to Nexus'
+description: 'Upload a file to a Nexus directory'
 inputs:
   NexusURL: 
     description:  'The URL of the Nexus'
@@ -17,6 +17,7 @@ runs:
   using: "composite"
   steps:
     - id: uploadpackage
+      name: Upload Package
       run: |
           [securestring]$secStringPassword = ConvertTo-SecureString "$env:NEXUS_PASSWORD" -AsPlainText -Force
           [pscredential]$credObject = New-Object System.Management.Automation.PSCredential ("$env:NEXUS_USER", $secStringPassword)
